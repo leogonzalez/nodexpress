@@ -33,8 +33,7 @@ app.get('/todos/:id', (req, res) => {
   const id = req.params.id;
 
   if (!ObjectId.isValid(id)) {
-    res.status(404).send('Not found');
-    return res.end();
+    return res.status(404).send('Not found');
   }
 
   Todo.findById({_id:req.params['id']}).then((todo) => {
@@ -42,6 +41,47 @@ app.get('/todos/:id', (req, res) => {
   }).catch((e) => {
     res.status(404).send('Not found')
   });
+});
+
+app.delete('/todos/:id', (req, res) => {
+  const id = req.params.id;
+  if (!ObjectId.isValid(id)) {
+    res.status(404).send('Not found');
+    return res.end();
+  }
+  Todo.findByIdAndRemove({_id:req.params['id']}).then((todo) => {
+    if (!todo) {
+      return res.status(404).send();
+    }
+    res.send(todo);
+  }).catch((e) => {
+    res.status(404).send('Not found')
+  });
+});
+
+app.patch('/todos/:id', (req, res) => {
+  var id = req.params.id;
+  var body = (({text, completed}) => {
+    return {
+      text,
+      completed: Boolean(completed)
+    };
+  })(req.body);
+  if (body.completed) {
+    body.completedAt= new Date().getTime();
+  } else {
+    body.completed = false;
+    body.completedAt = null;
+  }
+
+  Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
+    if (!todo) {
+      return res.status(404).send();
+    }
+    res.send({todo});
+  }).catch((e) => {
+    res.status(404).send();
+  })
 });
 
 app.listen(port, () => {

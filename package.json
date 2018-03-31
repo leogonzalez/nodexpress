@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha **/*.test.js",
+    "test": "mocha ./server/**/*.test.js",
     "test-watch": "nodemon --exec 'npm test'"
   },
   "author": "",
@@ -15,8 +15,10 @@
     "supertest": "^3.0.0"
   },
   "dependencies": {
+    "body-parser": "^1.18.2",
     "express": "^4.16.3",
     "mongodb": "^3.0.5",
+    "mongoose": "^5.0.12",
     "rewire": "^3.0.2"
   }
 }

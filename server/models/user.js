@@ -55,6 +55,18 @@ UserSchema.methods.generateAuthToken = function() {
   });
 };
 
+UserSchema.methods.removeToken = function (token) {
+  var user = this;
+
+  return user.update({
+    $pull: {
+      tokens: {
+        token
+      }
+    }
+  })
+}
+
 // statics turn functions into model methods, not instance methods
 UserSchema.statics.findByToken = function(token) {
   const User = this;
@@ -87,9 +99,9 @@ UserSchema.statics.findByCredentials = function (email, password) {
       });
     });
   });
-
-
 }
+
+
 
 UserSchema.pre('save', function (next) {
   var user = this;
